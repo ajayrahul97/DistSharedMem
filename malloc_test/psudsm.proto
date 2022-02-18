@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+option java_package = "ex.grpc";
+
+package psudsm;
+
+//Defines the service
+service PollCheck {
+    // Function invoked to send the request
+    rpc sendRequest (PollMessage) returns (PollReply) {}
+    rpc sendReadRequest (PageRead) returns (PageReply) {}
+    rpc sendPageRequest (PageRequest) returns (PageReply) {}
+    rpc sendWriteAccess (PageReply) returns (PollReply) {}
+    rpc sendLockRequest (LockMessage) returns (LockReply) {}
+}
+
+// The request message 
+message PollMessage {
+    int32 message_type = 1; // 0 = PINGPONG, 1 = REQUEST, 2 = REPLY
+    int32 page_id = 2; // page id
+    int32 from_port_id = 3; // node id or port id
+    bytes page_name = 4; // malloc name
+}
+
+// The response message containing response
+message PollReply {
+    int32 result = 1;
+}
+
+// The PageRead message from node to directory
+message PageRead {
+    int32 page_id = 1; // page id
+    int32 from_port_id = 2; // node id or port id
+    bytes page_name = 3; // malloc name
+}
+
+// PageRequest message from directory to node
+message PageRequest {
+	int32 page_id = 1; // page id
+	int32 convert_rw = 2; // whether to convert to RO or not
+    bytes page_name = 3; // malloc name
+}
+
+// PageReply - page response
+message PageReply {
+    bytes page_value = 1; // page value
+    int32 page_id = 2;
+    bytes page_name = 3; // malloc name
+}
+
+//LockMessage 
+message LockMessage {
+	int32 message_type = 1; // 0 ping-pong 1 request 2 reply
+	int32 mySeqNo = 2;
+	int32 nodeId = 3;
+}
+
+//Response message containing response
+message LockReply {
+	int32 result = 1;
+}

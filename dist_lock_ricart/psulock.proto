@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_package = "ex.grpc";
+
+package psulock;
+
+// Defines the service
+service PsuLock {
+    // Function invoked to send the request
+    rpc sendRequest (LockMessage) returns (LockReply) {}
+}
+
+// The request message 
+message LockMessage {
+    int32 message_type = 1; // 0 = PINGPONG, 1 = REQUEST, 2 = REPLY
+    int32 mySeqNo = 2;
+    int32 nodeId = 3; // node id or port id
+}
+
+// The response message containing response
+message LockReply {
+    int32 result = 1;
+}
